@@ -18,7 +18,6 @@
     
     <build>
         <defaultGoal>clean package</defaultGoal>
-        
         <plugins>
             <!-- copy dependencies to ${project.build.directory}/dependency -->
             <plugin>
