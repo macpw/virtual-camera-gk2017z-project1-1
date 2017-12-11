@@ -21,7 +21,7 @@ public class Point3D {
         this.coordinates = new Array2DRowRealMatrix(new double[]{x,y,z,1});
     }
     
-    // getter and setter
+    // Getters and Setters
     
     public RealMatrix getCoordinates() {
         return coordinates;
@@ -60,6 +60,8 @@ public class Point3D {
     public void setZ(double z) {
         coordinates.setEntry(2, 0, z);
     }
+    
+    // Methods
     
     @Override
     public String toString() {
