@@ -50,7 +50,7 @@ public final class DistanceJPanel extends JPanel {
         this.setBorder(new TitledBorder("Distance between observer and viewport"));
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         this.add(distanceJLabel, gbc);
         gbc.weightx = 1.0d;
         gbc.fill = GridBagConstraints.HORIZONTAL;
