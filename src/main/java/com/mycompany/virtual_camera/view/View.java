@@ -13,12 +13,38 @@ import javax.swing.JPanel;
  */
 public class View {
     
-    ViewportJPanel viewportJPanel;
+    private final ViewportJPanel viewportJPanel;
+    private final DistanceJPanel distanceJPanel;
+    private final MotionControlJPanel motionControlJPanel;
+    private final RotationControlJPanel rotationControlJPanel;
     
     public View(int width, int height) {
         viewportJPanel = new ViewportJPanel(width, height);
+        this.distanceJPanel = new DistanceJPanel();
+        this.motionControlJPanel = new MotionControlJPanel();
+        this.rotationControlJPanel = new RotationControlJPanel();
         this.createAndShowGui();
     }
+    
+    // Getters
+    
+    public ViewportJPanel getViewportJPanel() {
+        return viewportJPanel;
+    }
+    
+    public DistanceJPanel getDistanceJPanel() {
+        return distanceJPanel;
+    }
+    
+    public MotionControlJPanel getMotionControlJPanel() {
+        return motionControlJPanel;
+    }
+    
+    public RotationControlJPanel getRotationControlJPanel() {
+        return rotationControlJPanel;
+    }
+    
+    // Methods
     
     private void createAndShowGui() {
         JFrame jFrame = new JFrame();
@@ -37,9 +63,22 @@ public class View {
     private void addComponetnsToPane(Container pane) {
         pane.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        JPanel controlJPanel = new JPanel(new GridBagLayout());
+        gbc.gridx = 0;
         pane.add(viewportJPanel, gbc);
+        pane.add(controlJPanel, gbc);
+        
+        gbc.gridx = GridBagConstraints.RELATIVE;// Default
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        controlJPanel.add(distanceJPanel, gbc);
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        controlJPanel.add(motionControlJPanel, gbc);
+        controlJPanel.add(rotationControlJPanel, gbc);
     }
     
+    // Test View
     public static void main(String[] args) {
         new View(600, 400);
     }
