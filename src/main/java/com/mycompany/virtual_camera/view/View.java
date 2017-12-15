@@ -13,7 +13,10 @@ import javax.swing.JPanel;
  */
 public class View {
     
-    public View() {
+    ViewportJPanel viewportJPanel;
+    
+    public View(int width, int height) {
+        viewportJPanel = new ViewportJPanel(width, height);
         this.createAndShowGui();
     }
     
@@ -34,9 +37,10 @@ public class View {
     private void addComponetnsToPane(Container pane) {
         pane.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        pane.add(viewportJPanel, gbc);
     }
     
     public static void main(String[] args) {
-        new View();
+        new View(600, 400);
     }
 }
