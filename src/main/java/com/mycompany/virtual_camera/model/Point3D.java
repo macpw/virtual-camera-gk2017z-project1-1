@@ -63,6 +63,19 @@ public class Point3D {
     
     // Methods
     
+    public void normalize() {
+        if (coordinates.getEntry(3, 0) != 1.0) {
+            double x = coordinates.getEntry(0, 0) / coordinates.getEntry(3, 0);
+            double y = coordinates.getEntry(1, 0) / coordinates.getEntry(3, 0);
+            double z = coordinates.getEntry(2, 0) / coordinates.getEntry(3, 0);
+            double w = coordinates.getEntry(3, 0) / coordinates.getEntry(3, 0);
+            coordinates.setEntry(0, 0, x);
+            coordinates.setEntry(1, 0, y);
+            coordinates.setEntry(2, 0, z);
+            coordinates.setEntry(3, 0, w);
+        }
+    }
+    
     @Override
     public String toString() {
         return "Point3D{" + "coordinates=" + coordinates + '}';
