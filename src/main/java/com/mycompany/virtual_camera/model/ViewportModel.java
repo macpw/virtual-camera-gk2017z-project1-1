@@ -55,5 +55,15 @@ public class ViewportModel {
         x2 =  x2 + (viewportWidth  / 2.0d);
         y2 = -y2 + (viewportHeight / 2.0d);
         line2DHolder.getLine2D().setLine(x1, y1, x2, y2);
+        if (edge3D.getFirst().getZ() > distanceBetweenObserverAndViewport) {
+            line2DHolder.setFirstInFrontOfViewport(true);
+        } else {
+            line2DHolder.setFirstInFrontOfViewport(false);
+        }
+        if (edge3D.getSecond().getZ() > distanceBetweenObserverAndViewport) {
+            line2DHolder.setSecondInFrontOfViewport(true);
+        } else {
+            line2DHolder.setSecondInFrontOfViewport(false);
+        }
     }
 }
