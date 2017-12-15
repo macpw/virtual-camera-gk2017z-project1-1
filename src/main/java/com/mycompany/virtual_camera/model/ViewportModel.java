@@ -30,6 +30,7 @@ public class ViewportModel {
         this.viewportHeight = viewportHeight;
         
         this.edge3DToLine2DHolderMap = new HashMap<>();
+        this.initEdge3DToLine2DHolderMap();
     }
     
     // Getters and Setters
