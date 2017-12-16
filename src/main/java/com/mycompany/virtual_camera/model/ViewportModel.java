@@ -175,6 +175,9 @@ public class ViewportModel extends Observable {
             RealMatrix coordinates = point3D.getCoordinates();
             point3D.setCoordinates(moveForwardMatrix.multiply(coordinates));
         }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
     }
     public void moveBackward() {
         RealMatrix moveBackwardMatrix = geometricTransformationMatrices[MOVE_BACKWARD];
@@ -182,6 +185,9 @@ public class ViewportModel extends Observable {
             RealMatrix coordinates = point3D.getCoordinates();
             point3D.setCoordinates(moveBackwardMatrix.multiply(coordinates));
         }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
     }
     public void moveLeft() {
         RealMatrix moveLeftMatrix = geometricTransformationMatrices[MOVE_LEFT];
@@ -189,6 +195,9 @@ public class ViewportModel extends Observable {
             RealMatrix coordinates = point3D.getCoordinates();
             point3D.setCoordinates(moveLeftMatrix.multiply(coordinates));
         }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
     }
     public void moveRight() {
         RealMatrix moveRightMatrix = geometricTransformationMatrices[MOVE_RIGHT];
@@ -196,6 +205,9 @@ public class ViewportModel extends Observable {
             RealMatrix coordinates = point3D.getCoordinates();
             point3D.setCoordinates(moveRightMatrix.multiply(coordinates));
         }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
     }
     public void moveUpward() {
         RealMatrix moveUpwardMatrix = geometricTransformationMatrices[MOVE_UPWARD];
@@ -203,6 +215,9 @@ public class ViewportModel extends Observable {
             RealMatrix coordinates = point3D.getCoordinates();
             point3D.setCoordinates(moveUpwardMatrix.multiply(coordinates));
         }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
     }
     public void moveDownward() {
         RealMatrix moveDownwardMatrix = geometricTransformationMatrices[MOVE_DOWNWARD];
@@ -210,5 +225,8 @@ public class ViewportModel extends Observable {
             RealMatrix coordinates = point3D.getCoordinates();
             point3D.setCoordinates(moveDownwardMatrix.multiply(coordinates));
         }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
     }
 }
