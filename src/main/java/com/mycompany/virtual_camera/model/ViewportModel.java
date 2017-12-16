@@ -4,14 +4,25 @@ import java.awt.geom.Line2D;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
+import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  *
  * @author Paweł Mac
  */
-public class ViewportModel {
+public class ViewportModel extends Observable {
+    
+    private static final int 
+            MOVE_FORWARD  = 0,
+            MOVE_BACKWARD = 1,
+            MOVE_LEFT     = 2,
+            MOVE_RIGHT    = 3,
+            MOVE_UPWARD   = 4,
+            MOVE_DOWNWARD = 5,
+            NUMBER_OF_MATRICES = 12;
     
     private Set<Point3D> point3DsSet;
     private Set<Edge3D> edge3DsSet;
@@ -21,7 +32,8 @@ public class ViewportModel {
     
     private Map<Edge3D, Line2DHolder> edge3DToLine2DHolderMap;
     
-    private RealMatrix perspectiveTransformationMatrix;
+    private double step = 10.0d;
+    private RealMatrix[] geometricTransformationMatrices = new RealMatrix[NUMBER_OF_MATRICES];
     
     public ViewportModel(Set<Point3D> point3DsSet, Set<Edge3D> edge3DsSet, double distanceBetweenObserverAndViewport, int viewportWidth, int viewportHeight) {
         this.point3DsSet = point3DsSet;
@@ -45,6 +57,15 @@ public class ViewportModel {
         //TODO
     }
     
+    public double getStep() {
+        return step;
+    }
+    
+    public void setStep(double step) {
+        this.step = step;
+        //TODO
+    }
+    
     // Getters
     
     public int getViewportWidth() {
@@ -60,6 +81,51 @@ public class ViewportModel {
     }
     
     // Methods
+    
+    private void initGeometricTransformationMatrices() {
+        /****************
+        * |1, 0, 0, Tx| *
+        * |0, 1, 0, Ty| *
+        * |0, 0, 1, Tz| *
+        * |0, 0, 0,  1| *
+        *****************/
+        geometricTransformationMatrices[MOVE_FORWARD] = MatrixUtils.createRealMatrix(new double[][]{
+            {1, 0, 0, 0},
+            {0, 1, 0, 0},
+            {0, 0, 1, step},
+            {0, 0, 0, 1},
+        });
+        geometricTransformationMatrices[MOVE_BACKWARD] = MatrixUtils.createRealMatrix(new double[][]{
+            {1, 0, 0, 0},
+            {0, 1, 0, 0},
+            {0, 0, 1, -step},
+            {0, 0, 0, 1},
+        });
+        geometricTransformationMatrices[MOVE_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
+            {1, 0, 0, -step},
+            {0, 1, 0, 0},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1},
+        });
+        geometricTransformationMatrices[MOVE_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
+            {1, 0, 0, step},
+            {0, 1, 0, 0},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1},
+        });
+        geometricTransformationMatrices[MOVE_UPWARD] = MatrixUtils.createRealMatrix(new double[][]{
+            {1, 0, 0, 0},
+            {0, 1, 0, step},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1},
+        });
+        geometricTransformationMatrices[MOVE_DOWNWARD] = MatrixUtils.createRealMatrix(new double[][]{
+            {1, 0, 0, 0},
+            {0, 1, 0, -step},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1},
+        });
+    }
     
     private void initEdge3DToLine2DHolderMap() {
         for (Edge3D edge3D : edge3DsSet) {
@@ -91,6 +157,58 @@ public class ViewportModel {
             line2DHolder.setSecondInFrontOfViewport(true);
         } else {
             line2DHolder.setSecondInFrontOfViewport(false);
+        }
+    }
+    
+    private void updateEdge3DToLine2DHolderMap() {
+        for (Map.Entry<Edge3D, Line2DHolder> entry : edge3DToLine2DHolderMap.entrySet()) {
+            Edge3D keyEdge3D = entry.getKey();
+            Line2DHolder valueLine2DHolder = entry.getValue();
+            this.calculateLine2DOnViewport(keyEdge3D, valueLine2DHolder);
+        }
+    }
+    
+    // motions
+    public void moveForward() {
+        RealMatrix moveForwardMatrix = geometricTransformationMatrices[MOVE_FORWARD];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(moveForwardMatrix.multiply(coordinates));
+        }
+    }
+    public void moveBackward() {
+        RealMatrix moveBackwardMatrix = geometricTransformationMatrices[MOVE_BACKWARD];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(moveBackwardMatrix.multiply(coordinates));
+        }
+    }
+    public void moveLeft() {
+        RealMatrix moveLeftMatrix = geometricTransformationMatrices[MOVE_LEFT];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(moveLeftMatrix.multiply(coordinates));
+        }
+    }
+    public void moveRight() {
+        RealMatrix moveRightMatrix = geometricTransformationMatrices[MOVE_RIGHT];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(moveRightMatrix.multiply(coordinates));
+        }
+    }
+    public void moveUpward() {
+        RealMatrix moveUpwardMatrix = geometricTransformationMatrices[MOVE_UPWARD];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(moveUpwardMatrix.multiply(coordinates));
+        }
+    }
+    public void moveDownward() {
+        RealMatrix moveDownwardMatrix = geometricTransformationMatrices[MOVE_DOWNWARD];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(moveDownwardMatrix.multiply(coordinates));
         }
     }
 }
