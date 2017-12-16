@@ -1,6 +1,7 @@
 package com.mycompany.virtual_camera.model;
 
 import java.awt.geom.Line2D;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,29 @@ public class ViewportModel {
     }
     
     // Getters and Setters
+    
+    public double getDistanceBetweenObserverAndViewport() {
+        return distanceBetweenObserverAndViewport;
+    }
+    
+    public void setDistanceBetweenObserverAndViewport(double distanceBetweenObserverAndViewport) {
+        this.distanceBetweenObserverAndViewport = distanceBetweenObserverAndViewport;
+        //TODO
+    }
+    
+    // Getters
+    
+    public int getViewportWidth() {
+        return viewportWidth;
+    }
+    
+    public int getViewportHeight() {
+        return viewportHeight;
+    }
+    
+    public Collection<Line2DHolder> getCollectionOfLine2DHolder() {
+        return edge3DToLine2DHolderMap.values();
+    }
     
     // Methods
     
