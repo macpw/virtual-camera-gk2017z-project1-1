@@ -14,7 +14,8 @@ public class MoveForwardAction extends AbstractAction {
     
     public MoveForwardAction(ViewportModel viewportModel) {
         this.viewportModel = viewportModel;
-        this.putValue(NAME, NAME);
+        this.putValue(NAME, "↑");
+        this.putValue(SHORT_DESCRIPTION, "move forward");
     }
     
     @Override
