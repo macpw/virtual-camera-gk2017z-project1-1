@@ -31,6 +31,7 @@ public class RunMVC implements Runnable {
         View view = new View(viewportModel.getViewportWidth(), viewportModel.getViewportHeight());
         ViewportJPanel viewportJPanel = view.getViewportJPanel();
         viewportJPanel.setLine2DHoldersCollection(viewportModel.getCollectionOfLine2DHolder());
+        viewportModel.addObserver(viewportJPanel);
         Controller controller = new Controller(viewportModel, view);
     }
     
