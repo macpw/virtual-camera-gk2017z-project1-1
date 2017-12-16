@@ -6,13 +6,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Collection;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JPanel;
 
 /**
  *
  * @author Paweł Mac
  */
-public final class ViewportJPanel extends JPanel {
+public final class ViewportJPanel extends JPanel implements Observer {
     
     Collection<Line2DHolder> line2DHoldersCollection;
     
@@ -46,5 +48,10 @@ public final class ViewportJPanel extends JPanel {
         } else {
             System.out.println("line2DHoldersCollection is null");
         }
+    }
+    
+    @Override
+    public void update(Observable o, Object arg) {
+        this.repaint();
     }
 }
