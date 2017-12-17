@@ -44,6 +44,7 @@ public class ViewportModel extends Observable {
         
         this.edge3DToLine2DHolderMap = new HashMap<>();
         this.initEdge3DToLine2DHolderMap();
+        this.initGeometricTransformationMatrices();
     }
     
     // Getters and Setters
@@ -92,36 +93,36 @@ public class ViewportModel extends Observable {
         geometricTransformationMatrices[MOVE_FORWARD] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
             {0, 1, 0, 0},
-            {0, 0, 1, step},
+            {0, 0, 1, -step},
             {0, 0, 0, 1},
         });
         geometricTransformationMatrices[MOVE_BACKWARD] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
             {0, 1, 0, 0},
-            {0, 0, 1, -step},
+            {0, 0, 1, +step},
             {0, 0, 0, 1},
         });
         geometricTransformationMatrices[MOVE_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
-            {1, 0, 0, -step},
+            {1, 0, 0, +step},
             {0, 1, 0, 0},
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
         geometricTransformationMatrices[MOVE_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
-            {1, 0, 0, step},
+            {1, 0, 0, -step},
             {0, 1, 0, 0},
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
         geometricTransformationMatrices[MOVE_UPWARD] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
-            {0, 1, 0, step},
+            {0, 1, 0, -step},
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
         geometricTransformationMatrices[MOVE_DOWNWARD] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
-            {0, 1, 0, -step},
+            {0, 1, 0, +step},
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
