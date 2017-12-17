@@ -8,16 +8,16 @@ import javax.swing.AbstractAction;
  *
  * @author Paweł Mac
  */
-public class MoveForwardAction extends AbstractAction {
+public class MoveBackwardAction extends AbstractAction {
     
     private final ViewportModel viewportModel;
     
-    public MoveForwardAction(ViewportModel viewportModel) {
+    public MoveBackwardAction(ViewportModel viewportModel) {
         this.viewportModel = viewportModel;
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.viewportModel.moveForward();
+        this.viewportModel.moveBackward();
     }
 }
