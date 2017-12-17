@@ -1,6 +1,11 @@
 package com.mycompany.virtual_camera.controller;
 
+import com.mycompany.virtual_camera.controller.motion.MoveBackwardAction;
+import com.mycompany.virtual_camera.controller.motion.MoveDownwardAction;
 import com.mycompany.virtual_camera.controller.motion.MoveForwardAction;
+import com.mycompany.virtual_camera.controller.motion.MoveLeftAction;
+import com.mycompany.virtual_camera.controller.motion.MoveRightAction;
+import com.mycompany.virtual_camera.controller.motion.MoveUpwardAction;
 import com.mycompany.virtual_camera.model.ViewportModel;
 import com.mycompany.virtual_camera.view.View;
 import javax.swing.JButton;
@@ -28,9 +33,18 @@ public class Controller {
         JButton moveUpwardJButton   = view.getMotionControlJPanel().getMoveUpwardJButton();
         JButton moveDownwardJButton = view.getMotionControlJPanel().getMoveDownwardJButton();
         
-        MoveForwardAction moveForwardAction = new MoveForwardAction(viewportModel);
+        MoveForwardAction  moveForwardAction  = new MoveForwardAction(viewportModel);
+        MoveBackwardAction moveBackwardAction = new MoveBackwardAction(viewportModel);
+        MoveLeftAction     moveLeftAction     = new MoveLeftAction(viewportModel);
+        MoveRightAction    moveRightAction    = new MoveRightAction(viewportModel);
+        MoveUpwardAction   moveUpwardAction   = new MoveUpwardAction(viewportModel);
+        MoveDownwardAction moveDownwardAction = new MoveDownwardAction(viewportModel);
         
-        moveForwardJButton.setAction(moveForwardAction);
-        //moveForwardJButton.addActionListener(moveForwardAction);
+        moveForwardJButton .addActionListener(moveForwardAction);
+        moveBackwardJButton.addActionListener(moveBackwardAction);
+        moveLeftJButton    .addActionListener(moveLeftAction);
+        moveRightJButton   .addActionListener(moveRightAction);
+        moveUpwardJButton  .addActionListener(moveUpwardAction);
+        moveDownwardJButton.addActionListener(moveDownwardAction);
     }
 }
