@@ -16,12 +16,18 @@ import org.apache.commons.math3.linear.RealMatrix;
 public class ViewportModel extends Observable {
     
     private static final int 
-            MOVE_FORWARD  = 0,
-            MOVE_BACKWARD = 1,
-            MOVE_LEFT     = 2,
-            MOVE_RIGHT    = 3,
-            MOVE_UPWARD   = 4,
-            MOVE_DOWNWARD = 5,
+            MOVE_FORWARD       = 0,
+            MOVE_BACKWARD      = 1,
+            MOVE_LEFT          = 2,
+            MOVE_RIGHT         = 3,
+            MOVE_UPWARD        = 4,
+            MOVE_DOWNWARD      = 5,
+            ROTATE_LEFT        = 6,
+            ROTATE_RIGHT       = 7,
+            ROTATE_UPWARD      = 8,
+            ROTATE_DOWNWARD    = 9,
+            ROTATE_TILT_LEFT   = 10,
+            ROTATE_TILT_RIGHT  = 11,
             NUMBER_OF_MATRICES = 12;
     
     private Set<Point3D> point3DsSet;
@@ -33,7 +39,8 @@ public class ViewportModel extends Observable {
     private Map<Edge3D, Line2DHolder> edge3DToLine2DHolderMap;
     
     private double step = 10.0d;
-    private RealMatrix[] geometricTransformationMatrices = new RealMatrix[NUMBER_OF_MATRICES];
+    private double angleInDegrees = 1.0d;
+    private final RealMatrix[] geometricTransformationMatrices = new RealMatrix[NUMBER_OF_MATRICES];
     
     public ViewportModel(Set<Point3D> point3DsSet, Set<Edge3D> edge3DsSet, double distanceBetweenObserverAndViewport, int viewportWidth, int viewportHeight) {
         this.point3DsSet = point3DsSet;
@@ -64,6 +71,15 @@ public class ViewportModel extends Observable {
     
     public void setStep(double step) {
         this.step = step;
+        //TODO
+    }
+    
+    public double getAngleInDegrees() {
+        return angleInDegrees;
+    }
+    
+    public void setAngleInDegrees(double angleInDegrees) {
+        this.angleInDegrees = angleInDegrees;
         //TODO
     }
     
@@ -126,6 +142,86 @@ public class ViewportModel extends Observable {
             {0, 0, 1, 0},
             {0, 0, 0, 1},
         });
+        
+        double angleInRadians = Math.toRadians(angleInDegrees);
+        
+        geometricTransformationMatrices[ROTATE_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
+            { Math.cos(angleInRadians), 0, Math.sin(angleInRadians), 0},
+            {                        0, 1,                        0, 0},
+            {-Math.sin(angleInRadians), 0, Math.cos(angleInRadians), 0},
+            {                        0, 0,                        0, 1},
+        });
+        geometricTransformationMatrices[ROTATE_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
+            { Math.cos(-angleInRadians), 0, Math.sin(-angleInRadians), 0},
+            {                         0, 1,                         0, 0},
+            {-Math.sin(-angleInRadians), 0, Math.cos(-angleInRadians), 0},
+            {                         0, 0,                         0, 1},
+        });
+        geometricTransformationMatrices[ROTATE_UPWARD] = MatrixUtils.createRealMatrix(new double[][]{
+            { 1,                        0,                         0, 0},
+            { 0, Math.cos(angleInRadians), -Math.sin(angleInRadians), 0},
+            { 0, Math.sin(angleInRadians),  Math.cos(angleInRadians), 0},
+            { 0,                        0,                         0, 1},
+        });
+        geometricTransformationMatrices[ROTATE_DOWNWARD] = MatrixUtils.createRealMatrix(new double[][]{
+            { 1,                         0,                          0, 0},
+            { 0, Math.cos(-angleInRadians), -Math.sin(-angleInRadians), 0},
+            { 0, Math.sin(-angleInRadians),  Math.cos(-angleInRadians), 0},
+            { 0,                         0,                          0, 1},
+        });
+        geometricTransformationMatrices[ROTATE_TILT_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
+            { Math.cos(-angleInRadians), -Math.sin(-angleInRadians), 0, 0},
+            { Math.sin(-angleInRadians),  Math.cos(-angleInRadians), 0, 0},
+            {                        0,                         0, 1, 0},
+            {                        0,                         0, 0, 1},
+        });
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
+            { Math.cos(angleInRadians), -Math.sin(angleInRadians), 0, 0},
+            { Math.sin(angleInRadians),  Math.cos(angleInRadians), 0, 0},
+            {                         0,                          0, 1, 0},
+            {                         0,                          0, 0, 1},
+        });
+    }
+    
+    private void updateMoveMatrices() {
+        geometricTransformationMatrices[MOVE_FORWARD] .setEntry(2, 3, -step);
+        geometricTransformationMatrices[MOVE_BACKWARD].setEntry(2, 3, +step);
+        geometricTransformationMatrices[MOVE_LEFT]    .setEntry(0, 3, +step);
+        geometricTransformationMatrices[MOVE_RIGHT]   .setEntry(0, 3, -step);
+        geometricTransformationMatrices[MOVE_UPWARD]  .setEntry(1, 3, -step);
+        geometricTransformationMatrices[MOVE_DOWNWARD].setEntry(1, 3, +step);
+    }
+    
+    private void updateRotationMatrices() {
+        double angleInRadians = Math.toRadians(angleInDegrees);
+        double cosPositiveAngle = Math.cos(angleInRadians);
+        double sinPositiveAngle = Math.sin(angleInRadians);
+        double cosNegativeAngle = Math.cos(-angleInRadians);
+        double sinNegativeAngle = Math.sin(-angleInRadians);
+        geometricTransformationMatrices[ROTATE_LEFT].setEntry(0, 0,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_LEFT].setEntry(0, 2,  sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_LEFT].setEntry(2, 0, -sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_LEFT].setEntry(2, 2,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(0, 0,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(0, 2,  sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(2, 0, -sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_RIGHT].setEntry(2, 2,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(1, 1,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(1, 2, -sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(2, 1,  sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_UPWARD].setEntry(2, 2,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(1, 1,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(1, 2, -sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(2, 1,  sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_DOWNWARD].setEntry(2, 2,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(0, 0,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(0, 1, -sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(1, 0,  sinNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_LEFT].setEntry(1, 1,  cosNegativeAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(0, 0,  cosPositiveAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(0, 1, -sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(1, 0,  sinPositiveAngle);
+        geometricTransformationMatrices[ROTATE_TILT_RIGHT].setEntry(1, 1,  cosPositiveAngle);
     }
     
     private void initEdge3DToLine2DHolderMap() {
@@ -225,6 +321,67 @@ public class ViewportModel extends Observable {
         for (Point3D point3D : point3DsSet) {
             RealMatrix coordinates = point3D.getCoordinates();
             point3D.setCoordinates(moveDownwardMatrix.multiply(coordinates));
+        }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
+    }
+    // rotations
+    public void rotateLeft() {
+        RealMatrix rotateLeftMatrix = geometricTransformationMatrices[ROTATE_LEFT];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(rotateLeftMatrix.multiply(coordinates));
+        }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
+    }
+    public void rotateRight() {
+        RealMatrix rotateRightMatrix = geometricTransformationMatrices[ROTATE_RIGHT];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(rotateRightMatrix.multiply(coordinates));
+        }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
+    }
+    public void rotateUpward() {
+        RealMatrix rotateUpwardMatrix = geometricTransformationMatrices[ROTATE_UPWARD];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(rotateUpwardMatrix.multiply(coordinates));
+        }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
+    }
+    public void rotateDownward() {
+        RealMatrix rotateDownwardMatrix = geometricTransformationMatrices[ROTATE_DOWNWARD];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(rotateDownwardMatrix.multiply(coordinates));
+        }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
+    }
+    public void rotateTiltLeft() {
+        RealMatrix rotateTiltLeftMatrix = geometricTransformationMatrices[ROTATE_TILT_LEFT];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(rotateTiltLeftMatrix.multiply(coordinates));
+        }
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
+    }
+    public void rotateTiltRight() {
+        RealMatrix rotateTiltRightMatrix = geometricTransformationMatrices[ROTATE_TILT_RIGHT];
+        for (Point3D point3D : point3DsSet) {
+            RealMatrix coordinates = point3D.getCoordinates();
+            point3D.setCoordinates(rotateTiltRightMatrix.multiply(coordinates));
         }
         this.updateEdge3DToLine2DHolderMap();
         this.setChanged();
