@@ -11,7 +11,7 @@ import org.apache.commons.math3.linear.RealMatrix;
  */
 public class Point3D {
     
-    RealMatrix coordinates;// homogeneous coordinates
+    private final RealMatrix coordinates;// homogeneous coordinates
     
     public Point3D() {
         this.coordinates = MatrixUtils.createColumnRealMatrix(new double[]{0,0,0,1});
