@@ -71,7 +71,7 @@ public class ViewportModel extends Observable {
     
     public void setStep(double step) {
         this.step = step;
-        //TODO
+        this.updateMoveMatrices();//TODO
     }
     
     public double getAngleInDegrees() {
@@ -80,7 +80,7 @@ public class ViewportModel extends Observable {
     
     public void setAngleInDegrees(double angleInDegrees) {
         this.angleInDegrees = angleInDegrees;
-        //TODO
+        this.updateRotationMatrices();//TODO
     }
     
     // Getters
