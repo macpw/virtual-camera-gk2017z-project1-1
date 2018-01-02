@@ -37,6 +37,7 @@ public class ViewportModel extends Observable {
     private final int viewportHeight;
     
     private Map<Edge3D, Line2DHolder> edge3DToLine2DHolderMap;
+    private Map<Edge3D, Edge3D> edge3DToMockEdge3D;
     
     private double step = 10.0d;
     private double angleInDegrees = 1.0d;
@@ -50,7 +51,8 @@ public class ViewportModel extends Observable {
         this.viewportHeight = viewportHeight;
         
         this.edge3DToLine2DHolderMap = new HashMap<>();
-        this.initEdge3DToLine2DHolderMap();
+        this.edge3DToMockEdge3D = new HashMap<>();
+        this.initEdge3DToLine2DHolderMap();// init edge3DToMockEdge3D inside
         this.initGeometricTransformationMatrices();
     }
     
@@ -240,6 +242,8 @@ public class ViewportModel extends Observable {
             Line2DHolder line2DHolder = new Line2DHolder(line2D);
             this.calculateLine2DOnViewport(edge3D, line2DHolder);
             this.edge3DToLine2DHolderMap.put(edge3D, line2DHolder);
+            // init edge3DToMockEdge3D
+            this.edge3DToMockEdge3D.put(edge3D, new Edge3D(new Point3D(), new Point3D()));
         }
     }
     
@@ -271,8 +275,71 @@ public class ViewportModel extends Observable {
         for (Map.Entry<Edge3D, Line2DHolder> entry : edge3DToLine2DHolderMap.entrySet()) {
             Edge3D keyEdge3D = entry.getKey();
             Line2DHolder valueLine2DHolder = entry.getValue();
+            // before calculateLine2DOnViewport(edge3D, line2DHolder)
+            // mockEdge3D if necessery
+            Point3D firstPoint3D  = keyEdge3D.getFirst();
+            Point3D secondPoint3D = keyEdge3D.getSecond();
+            if (        (firstPoint3D.getZ() <= distanceBetweenObserverAndViewport || secondPoint3D.getZ() <= distanceBetweenObserverAndViewport) 
+                    && !(firstPoint3D.getZ() <= distanceBetweenObserverAndViewport && secondPoint3D.getZ() <= distanceBetweenObserverAndViewport)) {
+                Edge3D mockEdge3D = edge3DToMockEdge3D.get(keyEdge3D);
+                // update mockEdge3D by updating ponits
+                Point3D firstMockPoint3D = mockEdge3D.getFirst();
+                firstMockPoint3D.setCoordinates(firstPoint3D.getCoordinates());
+                Point3D secondMockPoint3D = mockEdge3D.getSecond();
+                secondMockPoint3D.setCoordinates(secondPoint3D.getCoordinates());
+                // mock one of points
+                if (firstMockPoint3D.getZ() <= distanceBetweenObserverAndViewport) {
+                    Point3D calculatedFirstMockPoint3D = calculateMockPoint3D(firstMockPoint3D, secondMockPoint3D);
+                    firstMockPoint3D.setCoordinates(calculatedFirstMockPoint3D.getCoordinates());
+                } else {
+                    Point3D calculatedSecondMockPoint3D = calculateMockPoint3D(secondMockPoint3D, firstMockPoint3D);
+                    secondMockPoint3D.setCoordinates(calculatedSecondMockPoint3D.getCoordinates());
+                }
+                // mock edge3D
+                keyEdge3D = mockEdge3D;
+            }
+            // now calculate
             this.calculateLine2DOnViewport(keyEdge3D, valueLine2DHolder);
         }
+    }
+    
+    // calculate line and plane intersection
+    private Point3D calculateMockPoint3D(Point3D firstPoint3D, Point3D secondPoint3D) {
+        //point
+        double px = firstPoint3D.getX();
+        double py = firstPoint3D.getY();
+        double pz = firstPoint3D.getZ();
+        // vector from first to second
+        double vx = secondPoint3D.getX() - firstPoint3D.getX();
+        double vy = secondPoint3D.getY() - firstPoint3D.getY();
+        double vz = secondPoint3D.getZ() - firstPoint3D.getZ();
+        /******************************************
+         * plane's equation: Ax + By + Cz + D = 0 *
+         ******************************************/
+        // in this situation: A == 0; B == 0;
+        double planeFactorC = 1;
+        double planeFactorD = -(distanceBetweenObserverAndViewport);
+        /*******************************
+         * line's parametric equation: *
+         * x = x0 + t*vx               *
+         * y = y0 + t*vy               *
+         * z = z0 + t*vz               *
+         *******************************/
+        //////////////////////////////////////
+        // plane's equation and line's parametric equation together
+        // calculate t
+        // A(px + t*vx) + B(py + t*vy) + C(pz + t*vz) + D = 0
+        // Apx + At*vx  + Bpy + Bt*vy  + Cpz + Ct*vz  + D = 0
+        // t(Avx  + Bvy + Cvz) + Apx + Bpy + Cpz + D = 0
+        // t = -(Apx + Bpy + Cpz + D) / (Avx  + Bvy + Cvz)
+        // then point P(x, y, z) is
+        // P(px + t*vx, py + t*vy, pz + t*vz)
+        //////////////////////////////////////
+        double sum_Apx_Bpy_Cpz_D = planeFactorC*pz + planeFactorD;
+        double sum_Avx_Bvy_Cvz   = planeFactorC*vz;
+        double t = (-sum_Apx_Bpy_Cpz_D)/sum_Avx_Bvy_Cvz;
+        Point3D mockPoint3D = new Point3D(px + t*vx, py + t*vy, pz + t*vz);
+        return mockPoint3D;
     }
     
     // motions
