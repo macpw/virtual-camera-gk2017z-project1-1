@@ -16,6 +16,7 @@ import com.mycompany.virtual_camera.controller.rotation.RotateTiltRightAction;
 import com.mycompany.virtual_camera.controller.rotation.RotateUpwardAction;
 import com.mycompany.virtual_camera.model.ViewportModel;
 import com.mycompany.virtual_camera.view.View;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -30,10 +31,12 @@ public class Controller {
     
     private final ViewportModel viewportModel;
     private final View view;
+    private final KeyBinding keyBinding;
     
     public Controller(ViewportModel viewportModel, View view) {
         this.viewportModel = viewportModel;
         this.view = view;
+        this.keyBinding = new KeyBinding(view.getViewportJPanel());
         this.addMotionActions();
         this.addRotationActions();
     }
@@ -87,6 +90,15 @@ public class Controller {
         
         moveDownwardJButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK), "move downward");
         moveDownwardJButton.getActionMap().put("move downward", moveDownwardAction);
+        
+        keyBinding.bindKeyWithAction(KeyEvent.VK_W, 0, moveForwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_S, 0, moveBackwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_A, 0, moveLeftAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_D, 0, moveRightAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_R, 0, moveUpwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_F, 0, moveDownwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK, moveUpwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK, moveDownwardAction);
     }
     
     private void addRotationActions() {
@@ -138,5 +150,19 @@ public class Controller {
         
         rotateTiltRightJButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK), "rotate tilt right");
         rotateTiltRightJButton.getActionMap().put("rotate tilt right", rotateTiltRightAction);
+        
+        keyBinding.bindKeyWithAction(KeyEvent.VK_A, InputEvent.SHIFT_DOWN_MASK, rotateLeftAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK, rotateRightAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_W, InputEvent.SHIFT_DOWN_MASK, rotateUpwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK, rotateDownwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_A, InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK, rotateTiltLeftAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK, rotateTiltRightAction);
+        
+        keyBinding.bindKeyWithAction(KeyEvent.VK_J, 0, rotateLeftAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_L, 0, rotateRightAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_I, 0, rotateUpwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_K, 0, rotateDownwardAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_U, 0, rotateTiltLeftAction);
+        keyBinding.bindKeyWithAction(KeyEvent.VK_O, 0, rotateTiltRightAction);
     }
 }
