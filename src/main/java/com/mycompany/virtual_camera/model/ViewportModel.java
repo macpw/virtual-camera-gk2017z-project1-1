@@ -100,12 +100,14 @@ public class ViewportModel extends Observable {
     // Methods
     
     private void initGeometricTransformationMatrices() {
-        /****************
-        * |1, 0, 0, Tx| *
-        * |0, 1, 0, Ty| *
-        * |0, 0, 1, Tz| *
-        * |0, 0, 0,  1| *
-        *****************/
+        /*****************
+         *  translation  *
+         *     matrix    *
+         * ⌈1, 0, 0, Tx⌉ *
+         * |0, 1, 0, Ty| *
+         * |0, 0, 1, Tz| *
+         * ⌊0, 0, 0,  1⌋ *
+         *****************/
         geometricTransformationMatrices[MOVE_FORWARD] = MatrixUtils.createRealMatrix(new double[][]{
             {1, 0, 0, 0},
             {0, 1, 0, 0},
@@ -143,6 +145,14 @@ public class ViewportModel extends Observable {
             {0, 0, 0, 1},
         });
         
+        /*************************************************************************************
+         * rotation matrix matrices                                                          *
+         *   rotate around OX axis      rotate around OY axis        rotate around OZ axis   *
+         * ⌈1,       0,       0,  0⌉  ⌈ cos(θy), 0, sin(θy),  0⌉   ⌈cos(θz),-sin(θz), 0,  0⌉ *
+         * |0, cos(θx),-sin(θx),  0|  |       0, 1,       0,  0|   |sin(θz), cos(θz), 0,  0| *
+         * |0, sin(θx), cos(θx),  0|  |-sin(θy), 0, cos(θy),  0|   |      0,       0, 1,  0| *
+         * ⌊0,       0,       0,  1⌋  ⌊       0, 0,       0,  1⌋   ⌊      0,       0, 0,  1⌋ *
+         *************************************************************************************/
         double angleInRadians = Math.toRadians(angleInDegrees);
         
         geometricTransformationMatrices[ROTATE_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
@@ -172,14 +182,14 @@ public class ViewportModel extends Observable {
         geometricTransformationMatrices[ROTATE_TILT_LEFT] = MatrixUtils.createRealMatrix(new double[][]{
             { Math.cos(-angleInRadians), -Math.sin(-angleInRadians), 0, 0},
             { Math.sin(-angleInRadians),  Math.cos(-angleInRadians), 0, 0},
-            {                        0,                         0, 1, 0},
-            {                        0,                         0, 0, 1},
+            {                         0,                          0, 1, 0},
+            {                         0,                          0, 0, 1},
         });
         geometricTransformationMatrices[ROTATE_TILT_RIGHT] = MatrixUtils.createRealMatrix(new double[][]{
             { Math.cos(angleInRadians), -Math.sin(angleInRadians), 0, 0},
             { Math.sin(angleInRadians),  Math.cos(angleInRadians), 0, 0},
-            {                         0,                          0, 1, 0},
-            {                         0,                          0, 0, 1},
+            {                        0,                         0, 1, 0},
+            {                        0,                         0, 0, 1},
         });
     }
     
