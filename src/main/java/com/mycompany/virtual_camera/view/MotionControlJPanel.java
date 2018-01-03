@@ -1,5 +1,6 @@
 package com.mycompany.virtual_camera.view;
 
+import com.mycompany.virtual_camera.view.util.FloatingPointDocumentFilter;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
 
 /**
  *
@@ -27,6 +30,10 @@ public final class MotionControlJPanel extends JPanel {
     private final JButton moveDownwardJButton = new JButton("↧");
     
     public MotionControlJPanel() {
+        this.stepTextField.setHorizontalAlignment(JTextField.CENTER);
+        Document document = this.stepTextField.getDocument();
+        ((AbstractDocument)document).setDocumentFilter(new FloatingPointDocumentFilter());
+        
         this.moveForwardJButton .setToolTipText("move forward");
         this.moveBackwardJButton.setToolTipText("move backward");
         this.moveLeftJButton    .setToolTipText("move left");
