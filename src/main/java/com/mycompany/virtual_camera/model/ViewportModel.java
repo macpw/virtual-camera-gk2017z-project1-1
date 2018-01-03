@@ -64,7 +64,9 @@ public class ViewportModel extends Observable {
     
     public void setDistanceBetweenObserverAndViewport(double distanceBetweenObserverAndViewport) {
         this.distanceBetweenObserverAndViewport = distanceBetweenObserverAndViewport;
-        //TODO
+        this.updateEdge3DToLine2DHolderMap();
+        this.setChanged();
+        this.notifyObservers();
     }
     
     public double getStep() {
@@ -73,7 +75,7 @@ public class ViewportModel extends Observable {
     
     public void setStep(double step) {
         this.step = step;
-        this.updateMoveMatrices();//TODO
+        this.updateMoveMatrices();
     }
     
     public double getAngleInDegrees() {
@@ -82,7 +84,7 @@ public class ViewportModel extends Observable {
     
     public void setAngleInDegrees(double angleInDegrees) {
         this.angleInDegrees = angleInDegrees;
-        this.updateRotationMatrices();//TODO
+        this.updateRotationMatrices();
     }
     
     // Getters
