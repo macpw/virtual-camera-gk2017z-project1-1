@@ -20,7 +20,7 @@ import javax.swing.text.Document;
 public final class MotionControlJPanel extends JPanel {
     
     private final JLabel stepJLabel = new JLabel("step:");
-    private final JTextField stepTextField = new JTextField(1);
+    private final JTextField stepJTextField = new JTextField(1);
     
     private final JButton moveForwardJButton  = new JButton("↑");
     private final JButton moveBackwardJButton = new JButton("↓");
@@ -30,8 +30,8 @@ public final class MotionControlJPanel extends JPanel {
     private final JButton moveDownwardJButton = new JButton("↧");
     
     public MotionControlJPanel() {
-        this.stepTextField.setHorizontalAlignment(JTextField.CENTER);
-        Document document = this.stepTextField.getDocument();
+        this.stepJTextField.setHorizontalAlignment(JTextField.CENTER);
+        Document document = this.stepJTextField.getDocument();
         ((AbstractDocument)document).setDocumentFilter(new FloatingPointDocumentFilter());
         
         this.moveForwardJButton .setToolTipText("move forward");
@@ -47,7 +47,7 @@ public final class MotionControlJPanel extends JPanel {
         this.add(stepJLabel, gbc);
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        this.add(stepTextField, gbc);
+        this.add(stepJTextField, gbc);
         // back to default
         gbc.gridwidth = 1;// Default
         gbc.fill = GridBagConstraints.NONE;// Default
@@ -69,8 +69,8 @@ public final class MotionControlJPanel extends JPanel {
     
     // Getters
     
-    public JTextField getStepTextField() {
-        return stepTextField;
+    public JTextField getStepJTextField() {
+        return stepJTextField;
     }
     
     public JButton getMoveForwardJButton() {

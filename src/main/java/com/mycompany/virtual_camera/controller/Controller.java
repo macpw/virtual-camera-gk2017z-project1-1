@@ -54,11 +54,11 @@ public class Controller {
     }
     
     private void addMotionActions() {
-        JTextField stepTextField = view.getMotionControlJPanel().getStepTextField();
-        stepTextField.setText(Double.toString(viewportModel.getStep()));
-        stepTextField.setToolTipText("step="+viewportModel.getStep());
-        StepTextFieldDocumentListener stepTextFieldDocumentListener = new StepTextFieldDocumentListener(stepTextField, viewportModel);
-        stepTextField.getDocument().addDocumentListener(stepTextFieldDocumentListener);
+        JTextField stepJTextField = view.getMotionControlJPanel().getStepJTextField();
+        stepJTextField.setText(Double.toString(viewportModel.getStep()));
+        stepJTextField.setToolTipText("step="+viewportModel.getStep());
+        StepTextFieldDocumentListener stepTextFieldDocumentListener = new StepTextFieldDocumentListener(stepJTextField, viewportModel);
+        stepJTextField.getDocument().addDocumentListener(stepTextFieldDocumentListener);
         
         // get buttons
         JButton moveForwardJButton  = view.getMotionControlJPanel().getMoveForwardJButton();
