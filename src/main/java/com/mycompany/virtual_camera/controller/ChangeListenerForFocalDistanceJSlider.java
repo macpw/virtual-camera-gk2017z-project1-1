@@ -10,12 +10,12 @@ import javax.swing.event.ChangeListener;
  *
  * @author Paweł Mac
  */
-public class ChangeListenerForDistanceJSlider implements ChangeListener {
+public class ChangeListenerForFocalDistanceJSlider implements ChangeListener {
     
     private final ViewportModel viewportModel;
     private final JLabel distanceJLabel;
     
-    public ChangeListenerForDistanceJSlider(ViewportModel viewportModel, JLabel distanceJLabel) {
+    public ChangeListenerForFocalDistanceJSlider(ViewportModel viewportModel, JLabel distanceJLabel) {
         this.viewportModel = viewportModel;
         this.distanceJLabel = distanceJLabel;
     }

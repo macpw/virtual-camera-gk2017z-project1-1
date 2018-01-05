@@ -1,4 +1,4 @@
-package com.mycompany.virtual_camera.controller.rotation;
+package com.mycompany.virtual_camera.controller.motion;
 
 import com.mycompany.virtual_camera.model.ViewportModel;
 import java.awt.Color;
@@ -13,39 +13,39 @@ import javax.swing.event.DocumentListener;
  *
  * @author Paweł Mac
  */
-public class AngleTextFieldDocumentListener implements DocumentListener {
+public class StepJTextFieldDocumentListener implements DocumentListener {
     
     private static final int DELAY = 500;
     private final ActionListenerForTimer actionListenerForTimer = new ActionListenerForTimer();
     private final javax.swing.Timer timer = new Timer(DELAY, actionListenerForTimer);
     
-    private final JTextField angleJTextField;
+    private final JTextField stepJTextField;
     private final ViewportModel viewportModel;
     
-    public AngleTextFieldDocumentListener(JTextField angleJTextField, ViewportModel viewportModel) {
-        this.angleJTextField = angleJTextField;
+    public StepJTextFieldDocumentListener(JTextField stepJTextField, ViewportModel viewportModel) {
+        this.stepJTextField = stepJTextField;
         this.viewportModel = viewportModel;
     }
     
     private void doUpdate() {
         try {
-            double parseDouble = Double.parseDouble(angleJTextField.getText());
-            viewportModel.setAngleInDegrees(parseDouble);
-            angleJTextField.setToolTipText("angle="+viewportModel.getAngleInDegrees());
+            double parseDouble = Double.parseDouble(stepJTextField.getText());
+            viewportModel.setStep(parseDouble);
+            stepJTextField.setToolTipText("step="+viewportModel.getStep());
         } catch (NumberFormatException nfe) {
-            angleJTextField.setBackground(Color.orange);
+            stepJTextField.setBackground(Color.orange);
         }
     }
     
     @Override
     public void insertUpdate(DocumentEvent e) {
-        angleJTextField.setBackground(Color.lightGray);
+        stepJTextField.setBackground(Color.lightGray);
         timer.restart();
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-        angleJTextField.setBackground(Color.lightGray);
+        stepJTextField.setBackground(Color.lightGray);
         timer.restart();
     }
 
@@ -58,9 +58,10 @@ public class AngleTextFieldDocumentListener implements DocumentListener {
         
         @Override
         public void actionPerformed(ActionEvent e) {
+            javax.swing.Timer timer = (javax.swing.Timer) e.getSource();
             timer.stop();
-            angleJTextField.setBackground(Color.white);
-            doUpdate();
+            StepJTextFieldDocumentListener.this.stepJTextField.setBackground(Color.white);
+            StepJTextFieldDocumentListener.this.doUpdate();
         }
     }
 }

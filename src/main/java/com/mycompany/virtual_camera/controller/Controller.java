@@ -6,8 +6,8 @@ import com.mycompany.virtual_camera.controller.motion.MoveForwardAction;
 import com.mycompany.virtual_camera.controller.motion.MoveLeftAction;
 import com.mycompany.virtual_camera.controller.motion.MoveRightAction;
 import com.mycompany.virtual_camera.controller.motion.MoveUpwardAction;
-import com.mycompany.virtual_camera.controller.motion.StepTextFieldDocumentListener;
-import com.mycompany.virtual_camera.controller.rotation.AngleTextFieldDocumentListener;
+import com.mycompany.virtual_camera.controller.motion.StepJTextFieldDocumentListener;
+import com.mycompany.virtual_camera.controller.rotation.AngleJTextFieldDocumentListener;
 import com.mycompany.virtual_camera.controller.rotation.RotateDownwardAction;
 import com.mycompany.virtual_camera.controller.rotation.RotateLeftAction;
 import com.mycompany.virtual_camera.controller.rotation.RotateRightAction;
@@ -47,7 +47,7 @@ public class Controller {
     private void addListenerToDistanceJPanel() {
         JLabel distanceJLabel = view.getDistanceJPanel().getDistanceJLabel();
         JSlider distanceJSlider = view.getDistanceJPanel().getDistanceJSlider();
-        ChangeListenerForDistanceJSlider changeListenerForDistanceJSlider = new ChangeListenerForDistanceJSlider(viewportModel, distanceJLabel);
+        ChangeListenerForFocalDistanceJSlider changeListenerForDistanceJSlider = new ChangeListenerForFocalDistanceJSlider(viewportModel, distanceJLabel);
         distanceJSlider.addChangeListener(changeListenerForDistanceJSlider);
         distanceJSlider.setValue((int)viewportModel.getDistanceBetweenObserverAndViewport());
         distanceJLabel.setText(Integer.toString((int)viewportModel.getDistanceBetweenObserverAndViewport()));
@@ -57,7 +57,7 @@ public class Controller {
         JTextField stepJTextField = view.getMotionControlJPanel().getStepJTextField();
         stepJTextField.setText(Double.toString(viewportModel.getStep()));
         stepJTextField.setToolTipText("step="+viewportModel.getStep());
-        StepTextFieldDocumentListener stepTextFieldDocumentListener = new StepTextFieldDocumentListener(stepJTextField, viewportModel);
+        StepJTextFieldDocumentListener stepTextFieldDocumentListener = new StepJTextFieldDocumentListener(stepJTextField, viewportModel);
         stepJTextField.getDocument().addDocumentListener(stepTextFieldDocumentListener);
         
         // get buttons
@@ -117,7 +117,7 @@ public class Controller {
         JTextField angleJTextField = view.getRotationControlJPanel().getAngleJTextField();
         angleJTextField.setText(Double.toString(viewportModel.getAngleInDegrees()));
         angleJTextField.setToolTipText("angle="+viewportModel.getAngleInDegrees());
-        AngleTextFieldDocumentListener angleTextFieldDocumentListener = new AngleTextFieldDocumentListener(angleJTextField, viewportModel);
+        AngleJTextFieldDocumentListener angleTextFieldDocumentListener = new AngleJTextFieldDocumentListener(angleJTextField, viewportModel);
         angleJTextField.getDocument().addDocumentListener(angleTextFieldDocumentListener);
         
         // get buttons
